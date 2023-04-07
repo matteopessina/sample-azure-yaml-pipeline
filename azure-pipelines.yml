@@ -34,6 +34,22 @@ jobs:
         pool: server
       deploy:
         steps:
-        - script: echo "Deploy!!!!"
+        - script: echo "Deploy in Dev!!!!"
+
+- deployment: prod_deploy
+  displayName: Deploy to prod environment
+  environment: Prod
+  strategy:
+    runOnce:
+      preDeploy:
+        steps:
+        - task: ManualValidation@0
+          inputs:
+            notifyUsers: 'matteo.pessina@live.com'
+            instructions: 'Are u sure to deploy to prod?'
+        pool: server
+      deploy:
+        steps:
+        - script: echo "Deploy in LIVE!!!!"
   
 
