@@ -12,9 +12,28 @@ pool:
 variables:
   buildConfiguration: 'Release'
 
-steps:
-- script: dotnet build --configuration $(buildConfiguration)
-  displayName: 'dotnet build $(buildConfiguration)'
 
-- script: dotnet run
-  displayName: 'Greetings'
+jobs:
+- job: build
+  displayName: Build Application
+  steps:
+  - script: dotnet build --configuration $(buildConfiguration)
+    displayName: 'dotnet build $(buildConfiguration)'
+
+- deployment: dev_deploy
+  displayName: Deploy to dev environment
+  environment: Dev
+  strategy:
+    runOnce:
+      preDeploy:
+        steps:
+        - task: ManualValidation@0
+          inputs:
+            notifyUsers: 'matteo.pessina@live.com'
+            instructions: 'Are u sure to deploy to dev?'
+        pool: server
+      deploy:
+        steps:
+        - script: echo "Deploy!!!!"
+  
+
